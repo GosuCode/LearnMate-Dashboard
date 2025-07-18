@@ -7,7 +7,7 @@ count.txt
 .env
 .output
 .vinxi
-count.txt
+.cursorrules
 
 # Environment files
 .env.local
@@ -162,7 +162,3 @@ components.json.bak
 
 # Performance monitoring
 .webpack/
-
-# Optional: Uncomment if you don't want to commit these
-# .env
-# .env.local
