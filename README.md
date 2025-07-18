@@ -1,4 +1,4 @@
-Welcome to your new TanStack app! 
+Welcome to your new TanStack app!
 
 # Getting Started
 
@@ -6,7 +6,7 @@ To run this application:
 
 ```bash
 npm install
-npm run start  
+npm run start
 ```
 
 # Building For Production
@@ -29,8 +29,6 @@ npm run test
 
 This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
 
-
-
 ## Shadcn
 
 Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
@@ -39,27 +37,36 @@ Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
 pnpx shadcn@latest add button
 ```
 
+## Environment Variables
 
-## T3Env
+This project uses T3Env for type-safe environment variables. Create a `.env` file in the root directory with the following variables:
 
-- You can use T3Env to add type safety to your environment variables.
-- Add Environment variables to the `src/env.mjs` file.
-- Use the environment variables in your code.
+```env
+# API Configuration
+VITE_API_URL=http://localhost:9000
+
+# App Configuration
+VITE_APP_TITLE=LearnMate Admin Dashboard
+```
 
 ### Usage
 
 ```ts
 import { env } from "@/env";
 
-console.log(env.VITE_APP_TITLE);
+console.log(env.VITE_API_URL); // http://localhost:9000
+console.log(env.VITE_APP_TITLE); // LearnMate Admin Dashboard
 ```
 
+### Environment Variables Reference
 
-
-
-
+| Variable         | Description       | Default                     |
+| ---------------- | ----------------- | --------------------------- |
+| `VITE_API_URL`   | Backend API URL   | `http://localhost:9000`     |
+| `VITE_APP_TITLE` | Application title | `LearnMate Admin Dashboard` |
 
 ## Routing
+
 This project uses [TanStack Router](https://tanstack.com/router). The initial setup is a file based router. Which means that the routes are managed as files in `src/routes`.
 
 ### Adding A Route
@@ -95,8 +102,8 @@ In the File Based Routing setup the layout is located in `src/routes/__root.tsx`
 Here is an example layout that includes a header:
 
 ```tsx
-import { Outlet, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import { Outlet, createRootRoute } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 import { Link } from "@tanstack/react-router";
 
@@ -113,13 +120,12 @@ export const Route = createRootRoute({
       <TanStackRouterDevtools />
     </>
   ),
-})
+});
 ```
 
 The `<TanStackRouterDevtools />` component is not required so you can remove it if you don't want it in your layout.
 
 More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
 
 ## Data Fetching
 

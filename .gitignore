@@ -19,6 +19,7 @@ count.txt
 # Build outputs
 build/
 out/
+.nitro/
 
 # Logs
 logs
@@ -126,7 +127,6 @@ coverage/
 *.tsbuildinfo
 
 # Additional environment files
-.env.example
 .env.template
 
 # Package manager lock files (uncomment if you want to ignore them)
