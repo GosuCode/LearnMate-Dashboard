@@ -118,8 +118,31 @@ export const contentApi = {
                 method: 'POST',
                 body: JSON.stringify(data),
             });
-            return await response.json();
+            const result = await response.json();
+            console.log("API Response:", result); // Debug log
+
+            // Parse the JSON string from the content field if it exists
+            if (result.success && result.data && result.data.content) {
+                try {
+                    // Remove markdown code block markers and parse JSON
+                    const jsonString = result.data.content.replace(/```json\n?|\n?```/g, '');
+                    const parsedData = JSON.parse(jsonString);
+                    return {
+                        ...result,
+                        data: parsedData
+                    };
+                } catch (parseError) {
+                    console.error("Failed to parse AI response:", parseError);
+                    return {
+                        success: false,
+                        error: 'Failed to parse AI response',
+                    };
+                }
+            }
+
+            return result;
         } catch (error) {
+            console.error("API Error:", error); // Debug log
             return {
                 success: false,
                 error: 'Failed to generate content',

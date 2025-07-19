@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AIContentForm } from "@/components/forms/AIContentForm";
-import { AIResults } from "@/components/content/AIResults";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
@@ -21,21 +20,24 @@ function AIGenerationPage() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [aiResults, setAiResults] = useState<{
-    type: "summary" | "quiz" | "categorize";
-    data: SummaryResponse | QuizResponse | CategorizeResponse;
-  } | null>(null);
 
   const handleAIGeneration = async (data: AIServiceRequest) => {
     try {
       setIsSubmitting(true);
       setError(null);
       const response = await contentApi.generateContent(data);
+      console.log("AI Generation Response:", response); // Debug log
       if (response.success && response.data) {
-        setAiResults({
-          type: data.type,
-          data: response.data,
-        });
+        // Automatically create content from AI generation
+        const contentData = formatAIDataToContent(data, response.data);
+        const createResponse = await contentApi.createContent(contentData);
+
+        if (createResponse.success) {
+          // Navigate to content page to show the newly created content
+          navigate({ to: "/content" });
+        } else {
+          setError(createResponse.error || "Failed to save generated content");
+        }
       } else {
         setError(response.error || "Failed to generate content");
       }
@@ -45,6 +47,47 @@ function AIGenerationPage() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Helper function to format AI data into content format
+  const formatAIDataToContent = (
+    request: AIServiceRequest,
+    aiData: SummaryResponse | QuizResponse | CategorizeResponse
+  ) => {
+    let title = "";
+    let content = "";
+
+    switch (request.type) {
+      case "summary":
+        const summaryData = aiData as SummaryResponse;
+        title = `AI Generated Summary - ${new Date().toLocaleDateString()}`;
+        content = `Summary:\n${summaryData.summary}\n\nKey Points:\n${summaryData.keyPoints.map((point) => `• ${point}`).join("\n")}\n\nWord Count: ${summaryData.wordCount}`;
+        break;
+
+      case "quiz":
+        const quizData = aiData as QuizResponse;
+        title = `AI Generated Quiz - ${new Date().toLocaleDateString()}`;
+        content = quizData.questions
+          .map(
+            (q, i) =>
+              `Question ${i + 1}: ${q.question}\n${q.options.map((opt, j) => `${String.fromCharCode(65 + j)}. ${opt}`).join("\n")}\nCorrect Answer: ${String.fromCharCode(65 + q.correctAnswer)}${q.explanation ? `\nExplanation: ${q.explanation}` : ""}\n`
+          )
+          .join("\n");
+        break;
+
+      case "categorize":
+        const categorizeData = aiData as CategorizeResponse;
+        title = `AI Generated Categories - ${new Date().toLocaleDateString()}`;
+        content = `Categories: ${categorizeData.categories.join(", ")}\nConfidence: ${Math.round(categorizeData.confidence * 100)}%`;
+        break;
+    }
+
+    return {
+      title,
+      content,
+      type: "text" as const,
+      category: request.type,
+    };
   };
 
   return (
@@ -77,17 +120,6 @@ function AIGenerationPage() {
         onCancel={() => navigate({ to: "/content" })}
         isLoading={isSubmitting}
       />
-
-      {/* AI Results */}
-      {aiResults && (
-        <div className="mt-8">
-          <AIResults
-            type={aiResults.type}
-            data={aiResults.data}
-            onClose={() => setAiResults(null)}
-          />
-        </div>
-      )}
     </div>
   );
 }
