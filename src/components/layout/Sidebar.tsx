@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
-import { Button } from "./ui/button";
-import { cn } from "../lib/utils";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   Users,
@@ -14,6 +14,7 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Sparkles,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -29,16 +30,28 @@ const navigationItems = [
     description: "Overview and analytics",
   },
   {
+    title: "Content",
+    href: "/content",
+    icon: BookOpen,
+    description: "Create and manage content",
+  },
+  {
+    title: "AI Generation",
+    href: "/content/ai",
+    icon: Sparkles,
+    description: "Generate AI content",
+  },
+  {
     title: "Users",
     href: "/dashboard/users",
     icon: Users,
     description: "Manage user accounts",
   },
   {
-    title: "Content",
+    title: "Admin Content",
     href: "/dashboard/content",
-    icon: BookOpen,
-    description: "AI-generated content",
+    icon: FileText,
+    description: "Admin content management",
   },
   {
     title: "Summaries",

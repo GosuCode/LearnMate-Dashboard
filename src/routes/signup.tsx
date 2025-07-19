@@ -1,39 +1,67 @@
 import React, { useState } from "react";
 import { useNavigate, createFileRoute } from "@tanstack/react-router";
-import { env } from "../env";
+import { useAuth } from "@/hooks/useAuth";
+import { env } from "@/env";
 
 export const Route = createFileRoute("/signup")({
   component: Signup,
 });
 
 function Signup() {
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+
     setLoading(true);
     try {
-      const res = await fetch(`${env.VITE_API_URL}/api/users/register`, {
+      const res = await fetch(`${env.VITE_API_URL}/api/users/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, name, password }),
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Signup failed");
-      setSuccess("Signup successful! You can now log in.");
-      setEmail("");
-      setName("");
-      setPassword("");
-      // Optionally, navigate to login page
-      // navigate({ to: '/login' });
+
+      // Store the token and user data using auth hook
+      if (data.success && data.data?.token) {
+        login(data.data.user, data.data.token);
+        // Navigate to admin dashboard after successful signup
+        navigate({ to: "/dashboard" });
+      } else {
+        throw new Error("Invalid response format");
+      }
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -45,7 +73,7 @@ function Signup() {
     setError("");
     setLoading(true);
     try {
-      const res = await fetch(`${env.VITE_API_URL}/api/auth/google/login`);
+      const res = await fetch(`${env.VITE_API_URL}/api/auth/google/signup`);
       const data = await res.json();
       if (!res.ok || !data.data?.authUrl)
         throw new Error("Failed to get Google OAuth URL");
@@ -60,25 +88,26 @@ function Signup() {
     <div className="max-w-md mx-auto mt-16 p-8 border rounded shadow bg-white">
       <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
       {error && <div className="mb-4 text-red-600">{error}</div>}
-      {success && <div className="mb-4 text-green-600">{success}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block mb-1 font-medium">Email</label>
-          <input
-            type="email"
-            className="w-full border px-3 py-2 rounded"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
         <div>
           <label className="block mb-1 font-medium">Name</label>
           <input
             type="text"
+            name="name"
             className="w-full border px-3 py-2 rounded"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-medium">Email</label>
+          <input
+            type="email"
+            name="email"
+            className="w-full border px-3 py-2 rounded"
+            value={formData.email}
+            onChange={handleChange}
             required
           />
         </div>
@@ -86,11 +115,22 @@ function Signup() {
           <label className="block mb-1 font-medium">Password</label>
           <input
             type="password"
+            name="password"
             className="w-full border px-3 py-2 rounded"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={handleChange}
             required
-            minLength={6}
+          />
+        </div>
+        <div>
+          <label className="block mb-1 font-medium">Confirm Password</label>
+          <input
+            type="password"
+            name="confirmPassword"
+            className="w-full border px-3 py-2 rounded"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            required
           />
         </div>
         <button
@@ -98,7 +138,7 @@ function Signup() {
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
           disabled={loading}
         >
-          {loading ? "Signing up..." : "Sign Up"}
+          {loading ? "Creating account..." : "Sign Up"}
         </button>
       </form>
       <div className="my-6 flex items-center justify-center">

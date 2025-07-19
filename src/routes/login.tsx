@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, createFileRoute } from "@tanstack/react-router";
-import { useAuth } from "../hooks/useAuth";
-import { env } from "../env";
+import { useAuth } from "@/hooks/useAuth";
+import { env } from "@/env";
 
 export const Route = createFileRoute("/login")({
   component: Login,
