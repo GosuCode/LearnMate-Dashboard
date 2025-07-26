@@ -42,7 +42,7 @@ function Signup() {
 
     setLoading(true);
     try {
-      const res = await fetch(`${env.VITE_API_URL}/api/users/signup`, {
+      const res = await fetch(`${env.VITE_API_URL}/api/users/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

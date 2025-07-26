@@ -66,7 +66,7 @@ function Login() {
         <div>
           <label className="block mb-1 font-medium">Email</label>
           <input
-            type="email"
+            // type="email"
             className="w-full border px-3 py-2 rounded"
             value={email}
             onChange={(e) => setEmail(e.target.value)}

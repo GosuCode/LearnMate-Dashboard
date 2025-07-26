@@ -30,6 +30,30 @@ const navigationItems = [
     description: "Overview and analytics",
   },
   {
+    title: "Semester",
+    href: "/semester",
+    icon: LayoutDashboard,
+    description: "",
+  },
+  {
+    title: "Subject",
+    href: "/subject",
+    icon: LayoutDashboard,
+    description: "",
+  },
+  {
+    title: "Content",
+    href: "/content",
+    icon: LayoutDashboard,
+    description: "",
+  },
+  {
+    title: "Course",
+    href: "/course",
+    icon: LayoutDashboard,
+    description: "Create and manage courses",
+  },
+  {
     title: "Content",
     href: "/content",
     icon: BookOpen,
@@ -46,12 +70,6 @@ const navigationItems = [
     href: "/dashboard/users",
     icon: Users,
     description: "Manage user accounts",
-  },
-  {
-    title: "Admin Content",
-    href: "/dashboard/content",
-    icon: FileText,
-    description: "Admin content management",
   },
   {
     title: "Summaries",

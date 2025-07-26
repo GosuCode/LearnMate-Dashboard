@@ -1,3 +1,4 @@
+import type { Course } from '@/types/course';
 import { env } from '../env';
 import type {
     Content,
@@ -194,4 +195,59 @@ export const contentApi = {
             };
         }
     },
-}; 
+
+}
+export const courseApi = {
+    async getAllCourses(): Promise<ApiResponse<Course[]>> {
+        try {
+            const res = await authenticatedFetch(`${API_BASE}/api/course`);
+            return await res.json();
+        } catch {
+            return { success: false, error: 'Failed to fetch courses' };
+        }
+    },
+
+    async getCourseById(id: string): Promise<ApiResponse<Course>> {
+        try {
+            const res = await authenticatedFetch(`${API_BASE}/api/course/${id}`);
+            return await res.json();
+        } catch {
+            return { success: false, error: 'Failed to fetch course' };
+        }
+    },
+
+    async createCourse(data: Partial<Course>): Promise<ApiResponse<Course>> {
+        try {
+            const res = await authenticatedFetch(`${API_BASE}/api/course`, {
+                method: 'POST',
+                body: JSON.stringify(data),
+            });
+            return await res.json();
+        } catch {
+            return { success: false, error: 'Failed to create course' };
+        }
+    },
+
+    async updateCourse(id: string, data: Partial<Course>): Promise<ApiResponse<Course>> {
+        try {
+            const res = await authenticatedFetch(`${API_BASE}/api/course/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify(data),
+            });
+            return await res.json();
+        } catch {
+            return { success: false, error: 'Failed to update course' };
+        }
+    },
+
+    async deleteCourse(id: string): Promise<ApiResponse<void>> {
+        try {
+            const res = await authenticatedFetch(`${API_BASE}/api/course/${id}`, {
+                method: 'DELETE',
+            });
+            return await res.json();
+        } catch {
+            return { success: false, error: 'Failed to delete course' };
+        }
+    }
+}

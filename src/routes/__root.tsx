@@ -15,6 +15,7 @@ import TanStackQueryLayout from "@/integrations/tanstack-query/layout.tsx";
 import appCss from "@/styles.css?url";
 
 import type { QueryClient } from "@tanstack/react-query";
+import { Toaster } from "sonner";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -60,10 +61,10 @@ function RootLayout({ children }: { children: React.ReactNode }) {
   const toggleSidebar = () => setIsSidebarCollapsed(!isSidebarCollapsed);
 
   // Routes that should show the sidebar and header
-  const shouldShowSidebar = () => {
-    const path = location.pathname;
-    return path.startsWith("/dashboard") || path.startsWith("/content");
-  };
+  const sidebarRoutes = ["/dashboard", "/semester"];
+
+  const shouldShowSidebar = () =>
+    sidebarRoutes.some((prefix) => location.pathname.startsWith(prefix));
 
   const showSidebar = shouldShowSidebar();
 
@@ -103,6 +104,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
+        <Toaster richColors position="top-right" />
         <Scripts />
       </body>
     </html>

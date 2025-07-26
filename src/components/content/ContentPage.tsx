@@ -9,9 +9,7 @@ import { Plus, Sparkles, Loader2, AlertCircle } from "lucide-react";
 import { contentApi } from "@/lib/api";
 import type {
   Content,
-  CreateContentRequest,
   UpdateContentRequest,
-  AIServiceRequest,
   SummaryResponse,
   QuizResponse,
   CategorizeResponse,
