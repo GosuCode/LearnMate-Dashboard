@@ -38,8 +38,8 @@ const navigationItems = [
   {
     title: "Subject",
     href: "/subject",
-    icon: LayoutDashboard,
-    description: "",
+    icon: BookOpen,
+    description: "Manage subjects",
   },
   {
     title: "Content",

@@ -61,7 +61,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
   const toggleSidebar = () => setIsSidebarCollapsed(!isSidebarCollapsed);
 
   // Routes that should show the sidebar and header
-  const sidebarRoutes = ["/dashboard", "/semester"];
+  const sidebarRoutes = ["/dashboard", "/semester", "/subject"];
 
   const shouldShowSidebar = () =>
     sidebarRoutes.some((prefix) => location.pathname.startsWith(prefix));
